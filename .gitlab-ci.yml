@@ -1,10 +1,10 @@
+stages:
+  - test
+
 include:
   - project: 'team113sanger/common/cicd-template'
     ref: 0.3.3 # Use the latest Git Tag or if experimenting with new components use a Git SHA
     file: '.gitlab-ci-components.yml'
-
-stages:
-  - test
 
 
 #############
@@ -62,6 +62,7 @@ test-ubuntu22-usr_local:
   extends:
       - .generic-variables
       - .component-before_script
+      - .generic-script
       - .component-after_script
       - .component-tags-shared-runner
 
@@ -74,5 +75,6 @@ test-ubuntu22-custom:
   extends:
       - .generic-variables
       - .component-before_script
+      - .generic-script
       - .component-after_script
       - .component-tags-shared-runner
