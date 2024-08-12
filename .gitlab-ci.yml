@@ -72,7 +72,11 @@ include:
       echo "Building the image for each version"
       for HTSLIB_VERSION in ${MULTIPLE_VERSIONS[@]}; do
         BUILD_CMD="docker build --target ${DOCKER_TARGET_STAGE:?} -t ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} -f ${DOCKERFILE_PATH:?} --build-arg HTSLIB_VERSION=${HTSLIB_VERSION:?} ${DOCKER_BUILD_CONTEXT:?}"
-        echo "Building image ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?}"
+        # Print the build command in blue so it is easy to see in the long log
+        echo ""
+        echo ""
+        echo ""
+        echo -e "\033[0;34mRunning build command ${BUILD_CMD}\033[0m"
         echo "Running build command ${BUILD_CMD}"
         eval ${BUILD_CMD}
       done
@@ -82,7 +86,11 @@ include:
     - |2
       echo "Testing the image for each version"
       for HTSLIB_VERSION in ${MULTIPLE_VERSIONS[@]}; do
-        echo "Testing image ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?}"
+        # Print the test command in purple so it is easy to see in the long log
+        echo ""
+        echo ""
+        echo ""
+        echo -e "\033[0;35mTesting image ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?}\033[0m"
         docker run --rm ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} ls -l ${TEST_FILE:?}
         docker run --rm ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} bash ${TEST_FILE:?} ${HTSLIB_VERSION:?}
       done
