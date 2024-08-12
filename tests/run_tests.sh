@@ -75,7 +75,7 @@ tabix -p bed test.bed.gz
 # Test 7: Basic functionality test of htsfile
 echo "Test 7: Testing basic functionality of htsfile..."
 htsfile test.bed.gz > htsfile_output.txt
-grep -q "test.bed.gz:	BGZF-compressed BED" htsfile_output.txt
+grep -qP "test.bed.gz:\tBED BGZF-compressed genomic region data" htsfile_output.txt
 print_result "htsfile correctly identified the bgzipped BED file"
 
 echo -e "\n${GREEN}All tests passed successfully!${NC}"
