@@ -104,3 +104,29 @@ test-base_r-custom:
       - .generic-script
       - .component-after_script
       - .component-tags-shared-runner
+
+test-python-usr_local:
+  stage: test
+  variables:
+    PRE_FETCH_BASE_IMAGE: python:3.11.9-slim-bookworm
+    IMAGE_TAG_SUFFIX: "-python.usr_local"
+    DOCKERFILE_PATH: Dockerfile.python.usr_local
+  extends:
+      - .generic-variables
+      - .component-before_script
+      - .generic-script
+      - .component-after_script
+      - .component-tags-shared-runner
+
+test-python-custom:
+  stage: test
+  variables:
+    PRE_FETCH_BASE_IMAGE: python:3.11.9-slim-bookworm
+    IMAGE_TAG_SUFFIX: "-python.custom"
+    DOCKERFILE_PATH: Dockerfile.python.custom
+  extends:
+      - .generic-variables
+      - .component-before_script
+      - .generic-script
+      - .component-after_script
+      - .component-tags-shared-runner
