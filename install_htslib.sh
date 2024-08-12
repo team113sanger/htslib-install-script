@@ -16,7 +16,9 @@ DEFAULT_INSTALL_DIR="/usr/local"
 SCRIPT_VERSION="1.0.0"
 REQUIRED_PROGRAMS=(curl make gcc tar sed)
 URL_TEMPLATE="https://github.com/samtools/htslib/releases/download/{}/htslib-{}.tar.bz2"
-
+LD_CONFIG_DIR="/etc/ld.so.conf.d/"
+LD_CONFIG_FILE="${LD_CONFIG_DIR:?}/htslib.conf"
+PROFILE_FILE="/etc/profile.d/htslib.sh"
 
 ### FUNCTIONS ###
 
@@ -395,3 +397,5 @@ function main() {
 assert_programs_exists "${REQUIRED_PROGRAMS[@]}"
 parse_args "$@"
 main "${INSTALL_DIR:?}" "${SETUP_DIR:?}" "${HTSLIB_VERSION:?}" "${IS_DEFAULT_INSTALL_DIR:?}"
+
+# End of script
