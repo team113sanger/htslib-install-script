@@ -48,6 +48,13 @@ include:
     - docker run --rm ${CANDIDATE_IMAGE:?} bash ${TEST_FILE:?} ${HTSLIB_VERSION:?}
     - echo "Build and test completed successfully"
 
+.template_job__build_and_test:
+  extends:
+    - .generic-variables
+    - .component-before_script
+    - .generic-script
+    - .component-after_script
+    - .component-tags-shared-runner
 
 ############
 #   JOBS   #
@@ -60,11 +67,7 @@ test-ubuntu22-usr_local:
     IMAGE_TAG_SUFFIX: "-ubuntu22.usr_local"
     DOCKERFILE_PATH: Dockerfile.ubuntu22.usr_local
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
 
 test-ubuntu22-custom:
   stage: test
@@ -73,11 +76,7 @@ test-ubuntu22-custom:
     IMAGE_TAG_SUFFIX: "-ubuntu22.custom"
     DOCKERFILE_PATH: Dockerfile.ubuntu22.custom
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
 
 test-base_r-usr_local:
   stage: test
@@ -86,11 +85,7 @@ test-base_r-usr_local:
     IMAGE_TAG_SUFFIX: "-rbase.usr_local"
     DOCKERFILE_PATH: Dockerfile.rbase.usr_local
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
 
 test-base_r-custom:
   stage: test
@@ -99,11 +94,7 @@ test-base_r-custom:
     IMAGE_TAG_SUFFIX: "-rbase.custom"
     DOCKERFILE_PATH: Dockerfile.rbase.custom
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
 
 test-python-usr_local:
   stage: test
@@ -112,11 +103,7 @@ test-python-usr_local:
     IMAGE_TAG_SUFFIX: "-python.usr_local"
     DOCKERFILE_PATH: Dockerfile.python.usr_local
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
 
 test-python-custom:
   stage: test
@@ -125,8 +112,4 @@ test-python-custom:
     IMAGE_TAG_SUFFIX: "-python.custom"
     DOCKERFILE_PATH: Dockerfile.python.custom
   extends:
-      - .generic-variables
-      - .component-before_script
-      - .generic-script
-      - .component-after_script
-      - .component-tags-shared-runner
+      - .template_job__build_and_test
