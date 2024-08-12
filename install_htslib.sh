@@ -1,4 +1,7 @@
 #!/bin/bash
+# Description: Install htslib from source
+# Usage: install_htslib.sh --help
+
 set -euo pipefail
 
 ### GLOBAL VARIABLES ###
@@ -118,7 +121,7 @@ function parse_args() {
   if [ -z "${user_install_dir}" ]; then
     install_dir="${DEFAULT_INSTALL_DIR}"
     is_default_install_dir=1
-  elif [ "${normalized_install_dir}" = "${normalized_default_dir}" ]; then
+  elif [ "${normalized_user_install_dir}" = "${normalized_default_dir}" ]; then
     install_dir="${DEFAULT_INSTALL_DIR}"
     is_default_install_dir=1
   else
@@ -302,8 +305,8 @@ function install() {
   local cmd=""
   local cmd_required_args="--enable-plugins --enable-libcurl"
   local cmd_non_default_arg__prefix="--prefix=${install_dir:?}"
-  local cmd_non_default_arg__cppflags="CPPFLAGS=-I${install_dir:?}/include"
-  local cmd_non_default_arg__ldflags="LDFLAGS=-L${install_dir:?}/lib -Wl,-R${install_dir:?}/lib"
+  local cmd_non_default_arg__cppflags="CPPFLAGS=\"-I${install_dir:?}/include\""
+  local cmd_non_default_arg__ldflags="LDFLAGS=\"-L${install_dir:?}/lib -Wl,-R${install_dir:?}/lib\""
   local cpu_count=$(get_cpu_count 6)
 
   print_info "Changing current directory to ${work_dir:?}"
@@ -327,7 +330,7 @@ function install() {
     cmd="${cmd:?} ${cmd_non_default_arg__ldflags:?}"
   fi
 
-  print_info "Running configure with command: ${cmd:?}"
+  print_info "Running configure with command: '${cmd:?}'"
   eval "${cmd:?}"
 
   print_info "Running make"
