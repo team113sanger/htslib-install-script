@@ -26,9 +26,11 @@ WORKDIR /opt
 WORKDIR /opt/repo
 
 COPY install_htslib.sh install_htslib.sh
+# Build time argument for HTSLIB version - argument name can be anything
+ARG HTSLIB_VERSION="1.14" 
 
 # Actual installation of htslib (defaults to installing to /usr/local)
-RUN bash install_htslib.sh "1.14"
+RUN bash install_htslib.sh $HTSLIB_VERSION
 
 #############################
 # TEST stage only           #
@@ -41,13 +43,24 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     pkg-config \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
 
+# Create a non-root user
+ENV USER_NAME=testuser
+RUN useradd -m ${USER_NAME:?} 
+
+# Create test directory
 WORKDIR /opt/test
 
-# Copy test files (to be created)
-COPY test_htslib.c /opt/test/
-COPY run_tests.sh /opt/test/
+# Copy test files
+COPY --chown=testuser:testuser ./tests/* /opt/test/
+
+# Make sure the test script is executable
+RUN chmod +x /opt/test/run_tests.sh && chown "${USER_NAME:?}:${USER_NAME:?}" -R .
+
+# Switch to the non-root user
+USER testuser
 
 # Run tests
-CMD ["bash", "run_tests.sh"]
+CMD ["bash", "/opt/test/run_tests.sh"]
