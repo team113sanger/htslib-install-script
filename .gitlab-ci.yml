@@ -78,3 +78,29 @@ test-ubuntu22-custom:
       - .generic-script
       - .component-after_script
       - .component-tags-shared-runner
+
+test-base_r-usr_local:
+  stage: test
+  variables:
+    PRE_FETCH_BASE_IMAGE: r-base:4.2.3
+    IMAGE_TAG_SUFFIX: "-rbase.usr_local"
+    DOCKERFILE_PATH: Dockerfile.rbase.usr_local
+  extends:
+      - .generic-variables
+      - .component-before_script
+      - .generic-script
+      - .component-after_script
+      - .component-tags-shared-runner
+
+test-base_r-custom:
+  stage: test
+  variables:
+    PRE_FETCH_BASE_IMAGE: r-base:4.2.3
+    IMAGE_TAG_SUFFIX: "-rbase.custom"
+    DOCKERFILE_PATH: Dockerfile.rbase.custom
+  extends:
+      - .generic-variables
+      - .component-before_script
+      - .generic-script
+      - .component-after_script
+      - .component-tags-shared-runner
