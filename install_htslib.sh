@@ -380,10 +380,6 @@ function main() {
   export PATH=$(clean_path_strings "${PATH:?}")
   export MANPATH=$(clean_path_strings "${MANPATH:?}")
 
-  # Configure and install the program
-  cwd=$(pwd)
-  trap "cd $cwd" EXIT
-
   # Run the installation
   install "${install_dir:?}" "${unpack_dir:?}" "${is_default_install_dir:?}"
 
@@ -397,6 +393,9 @@ function main() {
 
 assert_programs_exists "${REQUIRED_PROGRAMS[@]}"
 parse_args "$@"
+# Save the current working directory and restore it when the script exits
+cwd=$(pwd)
+trap 'exit_code=$?; cd "$cwd"; exit $exit_code' EXIT SIGHUP SIGINT SIGTERM SIGQUIT
 main "${INSTALL_DIR:?}" "${SETUP_DIR:?}" "${PROGRAM_VERSION:?}" "${IS_DEFAULT_INSTALL_DIR:?}"
 
 # End of script
