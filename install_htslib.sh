@@ -54,6 +54,11 @@ function print_usage() {
   echo "                    the ${PROGRAM_NAME:?} tarball (must be writable). Deleted after installation."
   echo "  -h, --help:       Print this message"
   echo "  --version:        Print the version of this script"
+  echo ""
+  echo "Required programs:"
+  for program in "${REQUIRED_PROGRAMS[@]}"; do
+    echo "  ${program}"
+  done
 }
 
 function parse_args() {
@@ -391,8 +396,8 @@ function main() {
 
 ### RUNTIME ###
 
-assert_programs_exists "${REQUIRED_PROGRAMS[@]}"
 parse_args "$@"
+assert_programs_exists "${REQUIRED_PROGRAMS[@]}"
 # Save the current working directory and restore it when the script exits
 cwd=$(pwd)
 trap 'exit_code=$?; cd "$cwd"; exit $exit_code' EXIT SIGHUP SIGINT SIGTERM SIGQUIT
