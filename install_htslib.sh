@@ -7,18 +7,16 @@ set -euo pipefail
 ### GLOBAL VARIABLES ###
 SETUP_DIR=""
 INSTALL_DIR=""
-HTSLIB_VERSION=""
+PROGRAM_VERSION=""
 IS_DEFAULT_INSTALL_DIR=1 # 1 == true, 0 == false
 
 
 ### CONSTANTS ###
+PROGRAM_NAME="htslib"
 DEFAULT_INSTALL_DIR="/usr/local"
 SCRIPT_VERSION="1.0.0"
 REQUIRED_PROGRAMS=(curl make gcc tar sed)
 URL_TEMPLATE="https://github.com/samtools/htslib/releases/download/{}/htslib-{}.tar.bz2"
-LD_CONFIG_DIR="/etc/ld.so.conf.d/"
-LD_CONFIG_FILE="${LD_CONFIG_DIR:?}/htslib.conf"
-PROFILE_FILE="/etc/profile.d/htslib.sh"
 
 ### FUNCTIONS ###
 
@@ -43,26 +41,28 @@ function print_error() {
 function print_usage() {
   echo "Usage: $0  <HTSLIB-VERSION> [--install-dir <INSTALL-DIR>] [--setup-dir <SETUP-DIR>] [-h|--help] [--version]"
   echo ""
-  echo "Installs htslib, compiling it from source."
+  echo "Installs ${PROGRAM_NAME:?}, compiling it from source."
   echo ""
   echo "Arguments:"
-  echo "  HTSLIB-VERSION: The version of htslib to install e.g. 1.14"
+  echo "  HTSLIB-VERSION: The version of ${PROGRAM_NAME:?} to install e.g. 1.14"
   echo ""
   echo "Options:"
-  echo "  --install-dir:    [Default: ${DEFAULT_INSTALL_DIR:?}] The directory to install htslib into, must be an absolute path and writable e.g. /opt/htslib"
-  echo "  --setup-dir:      [Default: (set by mktemp)] The directory to download and unpack the htslib tarball (must be writable). Deleted after installation."
+  echo "  --install-dir:    [Default: ${DEFAULT_INSTALL_DIR:?}] The directory to install "
+  echo "                    ${PROGRAM_NAME:?} into, must be an absolute path and writable e.g. /opt/${PROGRAM_NAME:?}"
+  echo "  --setup-dir:      [Default: (set by mktemp)] The directory to download and unpack "
+  echo "                    the ${PROGRAM_NAME:?} tarball (must be writable). Deleted after installation."
   echo "  -h, --help:       Print this message"
   echo "  --version:        Print the version of this script"
 }
 
 function parse_args() {
-  # Parse the command-line arguments, setting the INSTALL_DIR and HTSLIB_VERSION
+  # Parse the command-line arguments, setting the INSTALL_DIR and PROGRAM_VERSION
   # global variables. If the arguments are invalid, print an error message and
   # exit.
   local user_setup_dir=""
   local install_dir=""
   local user_install_dir=""
-  local htslib_version=""
+  local program_version=""
   local is_default_install_dir=""
 
   # Parse the command-line arguments
@@ -95,8 +95,8 @@ function parse_args() {
         shift
         ;;
       *)
-        if [ -z "${htslib_version}" ]; then
-          htslib_version="${1}"
+        if [ -z "${program_version}" ]; then
+          program_version="${1}"
         else
           print_error "Invalid argument: ${1}"
           print_usage
@@ -108,7 +108,7 @@ function parse_args() {
   done
 
   # Check that the required arguments are set
-  if [ -z "${htslib_version}" ]; then
+  if [ -z "${program_version}" ]; then
     print_error "Missing required arguments"
     print_usage
     exit 1
@@ -150,8 +150,8 @@ function parse_args() {
   # `setup_dir`
   # Parse the user-specified setup directory, or use a temporary directory if not set
   if [ -z "${user_setup_dir}" ]; then
-    # append the htslib version to the setup directory and a random string
-    setup_dir=$(mktemp -d -t "htslib-${htslib_version:?}-XXXXX")
+    # append the program version to the setup directory and a random string
+    setup_dir=$(mktemp -d -t "${PROGRAM_NAME:?}-${program_version:?}-XXXXX")
   else
     setup_dir="${user_setup_dir}"
   fi
@@ -168,10 +168,10 @@ function parse_args() {
     exit 1
   fi
 
-  # `htslib_version`
-  # Check that the htslib version is valid format e.g. 1.14 otherwise throw a warning
-  if [[ ! "${htslib_version}" =~ ^[0-9]+\.[0-9]+$ ]]; then
-    print_warning "Unexpected htslib version: ${htslib_version}, expected format is X.Y"
+  # `program_version`
+  # Check that the program version is valid format e.g. 1.14 otherwise throw a warning
+  if [[ ! "${program_version}" =~ ^[0-9]+\.[0-9]+$ ]]; then
+    print_warning "Unexpected ${PROGRAM_NAME:?} version: ${program_version}, expected format is X.Y"
   fi
 
   # Set the global variables
@@ -179,8 +179,8 @@ function parse_args() {
   print_info "Setting INSTALL_DIR=${INSTALL_DIR}"
   SETUP_DIR="${setup_dir}"
   print_info "Setting SETUP_DIR=${SETUP_DIR}"
-  HTSLIB_VERSION="${htslib_version}"
-  print_info "Setting HTSLIB_VERSION=${HTSLIB_VERSION}"
+  PROGRAM_VERSION="${program_version}"
+  print_info "Setting PROGRAM_VERSION=${PROGRAM_VERSION}"
   IS_DEFAULT_INSTALL_DIR="${is_default_install_dir}"
   print_info "Setting IS_DEFAULT_INSTALL_DIR=${IS_DEFAULT_INSTALL_DIR} (1 == true, 0 == false)"
 }
@@ -205,8 +205,8 @@ function assert_programs_exists() {
 }
 
 function format_url() {
-  # Format the URL for downloading htslib by replacing the placeholders with the
-  # version number.
+  # Format the URL for downloading the program download asset by replacing the
+  # placeholders with the version number.
   local version="${1}"
   local template_url="${URL_TEMPLATE}"
   local url=$(echo "$template_url" | sed "s|{}|$version|g")
@@ -252,7 +252,7 @@ function unpack_tarball() {
 
   print_info "Unpacking ${tarball:?} to ${unpack_dir:?}"
   mkdir -p "${unpack_dir:?}"
-  tar --strip-components 1 -C "${setup_dir:?}/htslib" -jxf "${tarball:?}"
+  tar --strip-components 1 -C "${unpack_dir:?}" -jxf "${tarball:?}"
 }
 
 function clean_path_strings() {
@@ -354,13 +354,13 @@ function main() {
   # Positional arguments
   local install_dir="${1}"
   local setup_dir="${2}"
-  local htslib_version="${3}"
+  local program_version="${3}"
   local is_default_install_dir="${4}"
 
   # Local constants
-  local tarball="${install_dir:?}/htslib-${htslib_version:?}.tar.bz2"
-  local unpack_dir="${setup_dir:?}/htslib"
-  local url=$(format_url "${htslib_version:?}")
+  local tarball="${install_dir:?}/${PROGRAM_NAME:?}-${program_version:?}.tar.bz2"
+  local unpack_dir="${setup_dir:?}/${PROGRAM_NAME:?}"
+  local url=$(format_url "${program_version:?}")
 
   # Download and unpack the tarball
   test_url "${url:?}"
@@ -379,7 +379,7 @@ function main() {
   export PATH=$(clean_path_strings "${PATH:?}")
   export MANPATH=$(clean_path_strings "${MANPATH:?}")
 
-  # Configure and install htslib
+  # Configure and install the program
   cwd=$(pwd)
   trap "cd $cwd" EXIT
 
@@ -396,6 +396,6 @@ function main() {
 
 assert_programs_exists "${REQUIRED_PROGRAMS[@]}"
 parse_args "$@"
-main "${INSTALL_DIR:?}" "${SETUP_DIR:?}" "${HTSLIB_VERSION:?}" "${IS_DEFAULT_INSTALL_DIR:?}"
+main "${INSTALL_DIR:?}" "${SETUP_DIR:?}" "${PROGRAM_VERSION:?}" "${IS_DEFAULT_INSTALL_DIR:?}"
 
 # End of script
