@@ -13,6 +13,7 @@ IS_DEFAULT_INSTALL_DIR=1 # 1 == true, 0 == false
 
 ### CONSTANTS ###
 PROGRAM_NAME="htslib"
+TARBALL_SUFFIX=".tar.bz2"
 DEFAULT_INSTALL_DIR="/usr/local"
 SCRIPT_VERSION="1.0.0"
 REQUIRED_PROGRAMS=(curl make gcc tar sed)
@@ -358,7 +359,7 @@ function main() {
   local is_default_install_dir="${4}"
 
   # Local constants
-  local tarball="${install_dir:?}/${PROGRAM_NAME:?}-${program_version:?}.tar.bz2"
+  local tarball="${install_dir:?}/${PROGRAM_NAME:?}-${program_version:?}.${TARBALL_SUFFIX:?}"
   local unpack_dir="${setup_dir:?}/${PROGRAM_NAME:?}"
   local url=$(format_url "${program_version:?}")
 
