@@ -33,7 +33,7 @@ WORKDIR /opt/repo
 ARG LIBDEFLATE_VERSION="v1.9"
 ARG HTSLIB_VERSION="1.14"
 ARG LIBDEFLATE_SCRIPT_URL="https://github.com/team113sanger/libdeflate-install-script/releases/download/1.0.1/install_libdeflate.sh"
-ARG HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
+ARG HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
 
 # Actual installation of libdeflate and htslib (defaults to installing to /usr/local)
 RUN curl -sSL $LIBDEFLATE_SCRIPT_URL | bash -s -- $LIBDEFLATE_VERSION

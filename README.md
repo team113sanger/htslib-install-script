@@ -37,7 +37,7 @@ Various version of the script can be downloaded from the [releases page](https:/
 
 ```bash
 HTSLIB_VERSION="1.16"
-HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
 
 curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 
@@ -60,7 +60,7 @@ For more information on how to install `libdeflate`, see the [libdeflate-install
 LIBDEFLATE_VERSION="v1.9"
 HTSLIB_VERSION="1.16"
 LIBDEFLATE_SCRIPT_URL="https://github.com/team113sanger/libdeflate-install-script/releases/download/1.0.1/install_libdeflate.sh"
-HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
 
 curl -sSL $LIBDEFLATE_SCRIPT_URL | bash -s -- $LIBDEFLATE_VERSION
 curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
