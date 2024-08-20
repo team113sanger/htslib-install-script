@@ -9,12 +9,16 @@ FROM ubuntu:22.04 AS base
 # For the installer script:
 # - curl: download files
 # - build-essential: for compiling source code (gcc, g++)
+# For libdeflate:
+# - cmake, clang: for compiling libdeflate
 # For htslib:
 # - zlib1g-dev, libbz2-dev, liblzma-dev: compression libraries for htslib
 # - libcurl4-openssl-dev: for curl dev features in htslib
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    cmake \
+    clang \
     zlib1g-dev \
     libbz2-dev \
     liblzma-dev \
@@ -27,9 +31,9 @@ WORKDIR /opt/repo
 
 # Build time argument for HTSLIB version - argument name can be anything
 ARG LIBDEFLATE_VERSION="v1.9"
-ARG HTSLIB_VERSION="1.16"
+ARG HTSLIB_VERSION="1.14"
 ARG LIBDEFLATE_SCRIPT_URL="https://github.com/team113sanger/libdeflate-install-script/releases/download/1.0.1/install_libdeflate.sh"
-ARG HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
+ARG HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
 
 # Actual installation of libdeflate and htslib (defaults to installing to /usr/local)
 RUN curl -sSL $LIBDEFLATE_SCRIPT_URL | bash -s -- $LIBDEFLATE_VERSION

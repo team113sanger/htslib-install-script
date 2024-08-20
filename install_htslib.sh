@@ -15,7 +15,7 @@ IS_DEFAULT_INSTALL_DIR=1 # 1 == true, 0 == false
 PROGRAM_NAME="htslib"
 TARBALL_SUFFIX=".tar.bz2"
 DEFAULT_INSTALL_DIR="/usr/local"
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.0.1"
 REQUIRED_PROGRAMS=(curl make gcc tar sed)
 URL_TEMPLATE="https://github.com/samtools/htslib/releases/download/{}/htslib-{}.tar.bz2"
 
