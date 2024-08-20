@@ -1,0 +1,66 @@
+#############################
+# BASE stage                #
+# Minimal to install htslib #
+#############################
+
+FROM r-base:4.2.3 AS base
+
+# Install dependencies for htslib
+# For the installer script:
+# - curl: download files
+# - build-essential: for compiling source code (gcc, g++)
+# For htslib:
+# - zlib1g-dev, libbz2-dev, liblzma-dev: compression libraries for htslib
+# - libcurl4-openssl-dev: for curl dev features in htslib
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    zlib1g-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /opt
+WORKDIR /opt/repo
+
+COPY install_htslib.sh install_htslib.sh
+# Build time argument for HTSLIB version - argument name can be anything
+ARG HTSLIB_VERSION="1.14" 
+
+# Actual installation of htslib (defaults to installing to /usr/local)
+RUN bash install_htslib.sh $HTSLIB_VERSION
+
+#############################
+# TEST stage only           #
+# Test htslib installation  #
+#############################
+FROM base AS test
+
+# Install additional tools for testing
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    pkg-config \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+ENV USER_NAME=testuser
+RUN useradd -m ${USER_NAME:?} 
+
+# Create test directory
+WORKDIR /opt/test
+
+# Copy test files
+COPY --chown=testuser:testuser ./tests/* /opt/test/
+
+# Make sure the test script is executable
+RUN chmod +x /opt/test/run_tests.sh && chown "${USER_NAME:?}:${USER_NAME:?}" -R .
+
+# Switch to the non-root user
+USER testuser
+
+# Run tests
+CMD ["bash", "/opt/test/run_tests.sh"]

@@ -1,93 +1,173 @@
 # htslib-install-script
 
+A convenience script to install any version of `htslib` on an Ubuntu (`22.04`) or Debian system (`bookworm`).
 
+## Table of Contents
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.internal.sanger.ac.uk/team113sanger/team113_software/htslib-install-script.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.internal.sanger.ac.uk/team113sanger/team113_software/htslib-install-script/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
+- [Description](#description)
+- [Installation - quick start](#installation---quick-start)
+- [Installation - quick start with libdeflate](#installation---quick-start-with-libdeflate)
+- [Installation - controlling the install location](#installation---controlling-the-install-location)
+- [Requirements](#requirements)
+- [Testing](#testing)
+- [Development](#development)
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+The script `install_htslib.sh` is a convenience script to install
+`htslib` ([GitHub: samtools/htslib](https://github.com/samtools/htslib)),
+a popular library for fast compression and decompression that is often used by tools like
+`samtools` and `htslib`.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+The script encapsulates the steps to download, configure, compile and install
+`htslib` to a specified location, for versions `1.14` to `1.20`.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+The script is tested via a private GitLab CICD against Ubuntu 22.04 and Debian
+bookworm with popular Docker images.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## Installation - quick start
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+With a single command the script can be downloaded and installed. For details on how to install to a custom location, 
+see [Installation - controlling the install location](#installation---controlling-the-install-location) section. 
+It is recommended to install `libdeflate` as well, go to the [quick start with libdeflate](#installation---quick-start-with-libdeflate) section.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+For a Dockerised example of how to install `htslib`, see the `docker/Dockerfile.ubuntu22.via_github`.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Various version of the script can be downloaded from the [releases page](https://github.com/team113sanger/htslib-install-script/releases).
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```bash
+HTSLIB_VERSION="1.16"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+# or with wget if curl is not available
+wget -qO- $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
+```
 
-## License
-For open source projects, say how it is licensed.
+## Installation - quick start with libdeflate
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Libdeflate is a heavily optimized library for DEFLATE-based compression and
+decompression, and is used by `htslib` for fast decompression of CRAM files,
+among other things. If absent, `htslib` will fall back to gzip for
+decompression.
+
+For a Dockerised example of how to install `libdeflate` and `htslib`, see the `docker/Dockerfile.ubuntu22.via_github_w_libdeflate`.
+
+For more information on how to install `libdeflate`, see the [libdeflate-install-script](https://github.com/team113sanger/libdeflate-install-script).
+
+```bash
+LIBDEFLATE_VERSION="v1.9"
+HTSLIB_VERSION="1.16"
+LIBDEFLATE_SCRIPT_URL="https://github.com/team113sanger/libdeflate-install-script/releases/download/1.0.1/install_libdeflate.sh"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.0/install_htslib.sh"
+
+curl -sSL $LIBDEFLATE_SCRIPT_URL | bash -s -- $LIBDEFLATE_VERSION
+curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
+```
+
+**Note**: The `libdeflate` script is run first as `htslib` will use `libdeflate` if it is available.
+
+
+## Installation - controlling the install location
+
+**The easiset way is to look at the Dockerfiles in the repository** as this is tested and under CI.
+
+But in general, you can run the following commands to install libdeflate which will install to `/usr/local`:
+
+```bash
+bash install_htslib.sh 1.16
+```
+
+Or you can specify a different install location e.g. `/path/to/install`:
+```bash
+DEST_DIR=/path/to/install
+
+bash install_htslib.sh 1.16 $DEST_DIR
+
+export PATH=$DEST_DIR/bin:$PATH
+export LD_LIBRARY_PATH=$DEST_DIR/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=$DEST_DIR/lib:$LIBRARY_PATH
+export C_INCLUDE_PATH=$DEST_DIR/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$DEST_DIR/include:$CPLUS_INCLUDE_PATH
+export PKG_CONFIG_PATH=$DEST_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+```
+
+## Requirements
+
+The common requirements for the script and the installation of `htslib` are documented
+clearly in the Dockerfiles in the repository. **It is strongly recommended to install `libdeflate`** 
+though it is optional: please see this convenience script
+[libdeflate-install-script](https://github.com/team113sanger/libdeflate-install-script).
+
+`htslib` officially documents its required and optional system requirements in
+the [INSTALL](https://github.com/samtools/htslib/blob/develop/INSTALL) file of
+its repository.
+
+If a required system library is missing, `htslib` compilation will fail with a
+self-explanatory error message e.g. `configure: error: libbzip2 development files not found ...`.
+
+
+## Testing
+
+The testing of script is done using Docker images to capture the minimal installation requirements.
+
+| HTS Lib Version | Environment | Default install `/usr/local` | Custom install `/opt/install` |
+| --------------- | ----------- | ---------------------------- | ----------------------------- |
+| 1.14            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.14            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.14            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.15.1          | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.15.1          | R-Base 4.2.3 (*Debian bookworm*)           | ✅ | ✅ |
+| 1.15.1          | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.16            | Ubuntu 22.04                               | ✅ | ✅ | 
+| 1.16            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.16            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.17            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.17            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.17            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.18            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.18            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.18            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.19            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.19            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.19            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.20            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.20            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.20            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+
+
+## Development
+
+To build
+```bash
+docker build -f docker/Dockerfile.ubuntu22.usr_local -t example:local .
+
+# or to build with a specific version
+VERSION=1.16
+docker build -f docker/Dockerfile.ubuntu22.usr_local --build-arg HTSLIB_VERSION=$VERSION -t example:local .
+
+```
+
+To run
+```bash
+docker run -it --rm example:local bash
+
+# or if wanting to bind mount the repo
+docker run -it --rm -v $(pwd):/opt/repo example:local bash
+```
+
+To test
+```bash
+VERSION=1.16
+docker run --rm example:local bash run_tests.sh $VERSION
+```
+
+## Cutting a release
+
+To cut a release, update the version in the script and the README.md. This
+repository uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
+
+Tests are automatically run in the GitLab CI pipeline.
+
+Tags will automatically create releases on GitHub.
