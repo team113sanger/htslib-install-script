@@ -35,6 +35,7 @@ include:
     - echo "HTSLIB_VERSION=${HTSLIB_VERSION}"
     #
     - test -f ${DOCKERFILE_PATH:?}
+    - docker pull ${PRE_FETCH_BASE_IMAGE:?}
     #
     # Build the image
     #
@@ -64,6 +65,7 @@ include:
     - echo "Multiple versions to build and test ${MULTIPLE_VERSIONS[@]}"
     #
     - test -f ${DOCKERFILE_PATH:?}
+    - docker pull ${PRE_FETCH_BASE_IMAGE:?}
     #
     # Build the image for each version
     #
