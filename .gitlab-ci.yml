@@ -3,10 +3,9 @@ stages:
   - test-many
 
 include:
-  - project: 'team113sanger/common/cicd-template'
-    ref: 0.3.3 # Use the latest Git Tag or if experimenting with new components use a Git SHA
-    file: '.gitlab-ci-components.yml'
-
+  - project: "team113sanger/common/cicd-template"
+    ref: 0.3.4 # Use the latest Git Tag or if experimenting with new components use a Git SHA
+    file: ".gitlab-ci-components.yml"
 
 #############
 # TEMPLATES #
@@ -22,46 +21,46 @@ include:
     TEST_FILE: run_tests.sh
     DOCKERFILE_PATH: "" # Must be set in the job definition
     DOCKER_BUILD_CONTEXT: .
-    HTSLIB_VERSION: "1.13"
+    LIBDEFLATE_VERSION: "v1.9"
 
 .generic-script_build_once:
   script:
     - echo "Running a build and then test for the image"
-    # 
+    #
     - echo "DOCKERFILE_PATH=${DOCKERFILE_PATH}"
     - echo "DOCKER_TARGET_STAGE=${DOCKER_TARGET_STAGE}"
     - echo "CANDIDATE_IMAGE=${CANDIDATE_IMAGE}"
     - echo "DOCKER_BUILD_CONTEXT=${DOCKER_BUILD_CONTEXT}"
     - echo "TEST_FILE=${TEST_FILE}"
-    - echo "HTSLIB_VERSION=${HTSLIB_VERSION}"
+    - echo "LIBDEFLATE_VERSION=${LIBDEFLATE_VERSION}"
     #
     - test -f ${DOCKERFILE_PATH:?}
     #
     # Build the image
     #
-    - BUILD_CMD="docker build --target ${DOCKER_TARGET_STAGE:?} -t ${CANDIDATE_IMAGE:?} -f ${DOCKERFILE_PATH:?} --build-arg HTSLIB_VERSION=${HTSLIB_VERSION:?} --progress=plain ${DOCKER_BUILD_CONTEXT:?}"
+    - BUILD_CMD="docker build --target ${DOCKER_TARGET_STAGE:?} -t ${CANDIDATE_IMAGE:?} -f ${DOCKERFILE_PATH:?} --build-arg LIBDEFLATE_VERSION=${LIBDEFLATE_VERSION:?} --progress=plain ${DOCKER_BUILD_CONTEXT:?}"
     - echo "Running build command ${BUILD_CMD}"
     - eval ${BUILD_CMD}
     #
     # Test the image
     #
     - docker run --rm ${CANDIDATE_IMAGE:?} ls -l ${TEST_FILE:?}
-    - docker run --rm ${CANDIDATE_IMAGE:?} bash ${TEST_FILE:?} ${HTSLIB_VERSION:?}
+    - docker run --rm ${CANDIDATE_IMAGE:?} bash ${TEST_FILE:?} ${LIBDEFLATE_VERSION:?}
     - echo "Build and test completed successfully"
-  
+
 .generic-script_build_many:
   script:
     - echo "Running a build and then test for the image"
-    # 
+    #
     - echo "DOCKERFILE_PATH=${DOCKERFILE_PATH}"
     - echo "DOCKER_TARGET_STAGE=${DOCKER_TARGET_STAGE}"
     - echo "CANDIDATE_IMAGE=${CANDIDATE_IMAGE}"
     - echo "DOCKER_BUILD_CONTEXT=${DOCKER_BUILD_CONTEXT}"
     - echo "TEST_FILE=${TEST_FILE}"
-    # From 1.13 to 1.20
-    - BUILT_IMAGE="htslib"
-    - HTSLIB_VERSION=""
-    - MULTIPLE_VERSIONS=(1.13 1.14 1.15.1 1.16 1.17 1.18 1.19 1.20)
+    # From v1.9 to v1.20
+    - BUILT_IMAGE="libdeflate"
+    - LIBDEFLATE_VERSION=""
+    - MULTIPLE_VERSIONS=(v1.9 v1.10 v1.11 v1.12 v1.13 v1.14 v1.15 v1.16 v1.17 v1.18 v1.19 v1.20)
     - echo "Multiple versions to build and test ${MULTIPLE_VERSIONS[@]}"
     #
     - test -f ${DOCKERFILE_PATH:?}
@@ -70,8 +69,8 @@ include:
     #
     - |2
       echo "Building the image for each version"
-      for HTSLIB_VERSION in ${MULTIPLE_VERSIONS[@]}; do
-        BUILD_CMD="docker build --target ${DOCKER_TARGET_STAGE:?} -t ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} -f ${DOCKERFILE_PATH:?} --build-arg HTSLIB_VERSION=${HTSLIB_VERSION:?} ${DOCKER_BUILD_CONTEXT:?}"
+      for LIBDEFLATE_VERSION in ${MULTIPLE_VERSIONS[@]}; do
+        BUILD_CMD="docker build --target ${DOCKER_TARGET_STAGE:?} -t ${BUILT_IMAGE:?}:${LIBDEFLATE_VERSION:?} -f ${DOCKERFILE_PATH:?} --build-arg LIBDEFLATE_VERSION=${LIBDEFLATE_VERSION:?} ${DOCKER_BUILD_CONTEXT:?}"
         # Print the build command in blue so it is easy to see in the long log
         echo ""
         echo ""
@@ -85,17 +84,16 @@ include:
     #
     - |2
       echo "Testing the image for each version"
-      for HTSLIB_VERSION in ${MULTIPLE_VERSIONS[@]}; do
+      for LIBDEFLATE_VERSION in ${MULTIPLE_VERSIONS[@]}; do
         # Print the test command in purple so it is easy to see in the long log
         echo ""
         echo ""
         echo ""
-        echo -e "\033[0;35mTesting image ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?}\033[0m"
-        docker run --rm ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} ls -l ${TEST_FILE:?}
-        docker run --rm ${BUILT_IMAGE:?}:${HTSLIB_VERSION:?} bash ${TEST_FILE:?} ${HTSLIB_VERSION:?}
+        echo -e "\033[0;35mTesting image ${BUILT_IMAGE:?}:${LIBDEFLATE_VERSION:?}\033[0m"
+        docker run --rm ${BUILT_IMAGE:?}:${LIBDEFLATE_VERSION:?} ls -l ${TEST_FILE:?}
+        docker run --rm ${BUILT_IMAGE:?}:${LIBDEFLATE_VERSION:?} bash ${TEST_FILE:?} ${LIBDEFLATE_VERSION:?}
       done
     - echo "Build and test completed successfully"
-    
 
 .template_job__build_one_and_test:
   extends:
@@ -104,6 +102,7 @@ include:
     - .generic-script_build_once
     - .component-after_script
     - .component-tags-shared-runner
+    - .component-rules-except-release
 
 .template_job__build_many_and_test:
   extends:
@@ -112,7 +111,7 @@ include:
     - .generic-script_build_many
     - .component-after_script
     - .component-tags-shared-runner
-
+    - .component-rules-develop-feature-hotfix-only
 
 ############
 #   JOBS   #
@@ -123,78 +122,78 @@ test-one-ubuntu22-usr_local:
   variables:
     PRE_FETCH_BASE_IMAGE: ubuntu:22.04
     IMAGE_TAG_SUFFIX: "-ubuntu22.usr_local"
-    DOCKERFILE_PATH: Dockerfile.ubuntu22.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.ubuntu22.usr_local
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-one-ubuntu22-custom:
   stage: test-one
   variables:
     PRE_FETCH_BASE_IMAGE: ubuntu:22.04
     IMAGE_TAG_SUFFIX: "-ubuntu22.custom"
-    DOCKERFILE_PATH: Dockerfile.ubuntu22.custom
+    DOCKERFILE_PATH: docker/Dockerfile.ubuntu22.custom
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-one-base_r-usr_local:
   stage: test-one
   variables:
     PRE_FETCH_BASE_IMAGE: r-base:4.2.3
     IMAGE_TAG_SUFFIX: "-rbase.usr_local"
-    DOCKERFILE_PATH: Dockerfile.rbase.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.rbase.usr_local
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-one-base_r-custom:
   stage: test-one
   variables:
     PRE_FETCH_BASE_IMAGE: r-base:4.2.3
     IMAGE_TAG_SUFFIX: "-rbase.custom"
-    DOCKERFILE_PATH: Dockerfile.rbase.custom
+    DOCKERFILE_PATH: docker/Dockerfile.rbase.custom
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-one-python-usr_local:
   stage: test-one
   variables:
     PRE_FETCH_BASE_IMAGE: python:3.11.9-slim-bookworm
     IMAGE_TAG_SUFFIX: "-python.usr_local"
-    DOCKERFILE_PATH: Dockerfile.python.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.python.usr_local
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-one-python-custom:
   stage: test-one
   variables:
     PRE_FETCH_BASE_IMAGE: python:3.11.9-slim-bookworm
     IMAGE_TAG_SUFFIX: "-python.custom"
-    DOCKERFILE_PATH: Dockerfile.python.custom
+    DOCKERFILE_PATH: docker/Dockerfile.python.custom
   extends:
-      - .template_job__build_one_and_test
+    - .template_job__build_one_and_test
 
 test-many-ubuntu22-usr_local:
   stage: test-many
   variables:
     PRE_FETCH_BASE_IMAGE: ubuntu:22.04
     IMAGE_TAG_SUFFIX: "-ubuntu22.usr_local"
-    DOCKERFILE_PATH: Dockerfile.ubuntu22.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.ubuntu22.usr_local
   extends:
-      - .template_job__build_many_and_test
+    - .template_job__build_many_and_test
 
 test-many-python-usr_local:
   stage: test-many
   variables:
     PRE_FETCH_BASE_IMAGE: python:3.11.9-slim-bookworm
     IMAGE_TAG_SUFFIX: "-python.usr_local"
-    DOCKERFILE_PATH: Dockerfile.python.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.python.usr_local
   extends:
-      - .template_job__build_many_and_test
+    - .template_job__build_many_and_test
 
 test-many-base_r-usr_local:
   stage: test-many
   variables:
     PRE_FETCH_BASE_IMAGE: r-base:4.2.3
     IMAGE_TAG_SUFFIX: "-rbase.usr_local"
-    DOCKERFILE_PATH: Dockerfile.rbase.usr_local
+    DOCKERFILE_PATH: docker/Dockerfile.rbase.usr_local
   extends:
-      - .template_job__build_many_and_test
+    - .template_job__build_many_and_test
