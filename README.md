@@ -76,14 +76,14 @@ curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 But in general, you can run the following commands to install libdeflate which will install to `/usr/local`:
 
 ```bash
-bash install_htslib.sh v1.9
+bash install_htslib.sh 1.16
 ```
 
 Or you can specify a different install location e.g. `/path/to/install`:
 ```bash
 DEST_DIR=/path/to/install
 
-bash install_htslib.sh v1.9 $DEST_DIR
+bash install_htslib.sh 1.16 $DEST_DIR
 
 export PATH=$DEST_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$DEST_DIR/lib:$LD_LIBRARY_PATH
