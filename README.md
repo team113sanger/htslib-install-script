@@ -7,6 +7,7 @@ A convenience script to install any version of `htslib` on an Ubuntu (`22.04`) o
 - [Description](#description)
 - [Installation - quick start](#installation---quick-start)
 - [Installation - quick start with libdeflate](#installation---quick-start-with-libdeflate)
+- [Installation - installing samtools and htsslib](#installation---installing-samtools-and-htsslib)
 - [Installation - controlling the install location](#installation---controlling-the-install-location)
 - [Requirements](#requirements)
 - [Testing](#testing)
@@ -16,8 +17,8 @@ A convenience script to install any version of `htslib` on an Ubuntu (`22.04`) o
 
 The script `install_htslib.sh` is a convenience script to install
 `htslib` ([GitHub: samtools/htslib](https://github.com/samtools/htslib)),
-a popular library for fast compression and decompression that is often used by tools like
-`samtools` and `htslib`.
+a popular library for reading and writing files in the SAM/BAM/CRAM formats as
+well as VCF/BCF formats. It includes `tabix` and `bgzip` utility programs.
 
 The script encapsulates the steps to download, configure, compile and install
 `htslib` to a specified location, for versions `1.14` to `1.20`.
@@ -68,6 +69,10 @@ curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 
 **Note**: The `libdeflate` script is run first as `htslib` will use `libdeflate` if it is available.
 
+## Installation - installing samtools and htsslib
+
+You can find instructions on how to install `samtools` together with `htslib` in the [samtools-install-script repository](https://github.com/team113sanger/samtools-install-script).
+
 
 ## Installation - controlling the install location
 
@@ -83,7 +88,7 @@ Or you can specify a different install location e.g. `/path/to/install`:
 ```bash
 DEST_DIR=/path/to/install
 
-bash install_htslib.sh 1.16 $DEST_DIR
+bash install_htslib.sh 1.16 --install-dir $DEST_DIR
 
 export PATH=$DEST_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$DEST_DIR/lib:$LD_LIBRARY_PATH
