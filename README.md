@@ -7,6 +7,7 @@ A convenience script to install any version of `htslib` on an Ubuntu (`22.04`) o
 - [Description](#description)
 - [Installation - quick start](#installation---quick-start)
 - [Installation - quick start with libdeflate](#installation---quick-start-with-libdeflate)
+- [Installation - installing samtools and htsslib](#installation---installing-samtools-and-htsslib)
 - [Installation - controlling the install location](#installation---controlling-the-install-location)
 - [Requirements](#requirements)
 - [Testing](#testing)
@@ -16,11 +17,11 @@ A convenience script to install any version of `htslib` on an Ubuntu (`22.04`) o
 
 The script `install_htslib.sh` is a convenience script to install
 `htslib` ([GitHub: samtools/htslib](https://github.com/samtools/htslib)),
-a popular library for fast compression and decompression that is often used by tools like
-`samtools` and `htslib`.
+a popular library for reading and writing files in the SAM/BAM/CRAM formats as
+well as VCF/BCF formats. It includes `tabix` and `bgzip` utility programs.
 
 The script encapsulates the steps to download, configure, compile and install
-`htslib` to a specified location, for versions `1.14` to `1.20`.
+`htslib` to a specified location, for versions `1.10` to `1.20`.
 
 The script is tested via a private GitLab CICD against Ubuntu 22.04 and Debian
 bookworm with popular Docker images.
@@ -37,7 +38,7 @@ Various version of the script can be downloaded from the [releases page](https:/
 
 ```bash
 HTSLIB_VERSION="1.16"
-HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.2/install_htslib.sh"
 
 curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 
@@ -60,13 +61,17 @@ For more information on how to install `libdeflate`, see the [libdeflate-install
 LIBDEFLATE_VERSION="v1.9"
 HTSLIB_VERSION="1.16"
 LIBDEFLATE_SCRIPT_URL="https://github.com/team113sanger/libdeflate-install-script/releases/download/1.0.1/install_libdeflate.sh"
-HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.1/install_htslib.sh"
+HTSLIB_SCRIPT_URL="https://github.com/team113sanger/htslib-install-script/releases/download/1.0.2/install_htslib.sh"
 
 curl -sSL $LIBDEFLATE_SCRIPT_URL | bash -s -- $LIBDEFLATE_VERSION
 curl -sSL $HTSLIB_SCRIPT_URL | bash -s -- $HTSLIB_VERSION
 ```
 
 **Note**: The `libdeflate` script is run first as `htslib` will use `libdeflate` if it is available.
+
+## Installation - installing samtools and htsslib
+
+You can find instructions on how to install `samtools` together with `htslib` in the [samtools-install-script repository](https://github.com/team113sanger/samtools-install-script).
 
 
 ## Installation - controlling the install location
@@ -83,7 +88,7 @@ Or you can specify a different install location e.g. `/path/to/install`:
 ```bash
 DEST_DIR=/path/to/install
 
-bash install_htslib.sh 1.16 $DEST_DIR
+bash install_htslib.sh 1.16 --install-dir $DEST_DIR
 
 export PATH=$DEST_DIR/bin:$PATH
 export LD_LIBRARY_PATH=$DEST_DIR/lib:$LD_LIBRARY_PATH
@@ -114,6 +119,18 @@ The testing of script is done using Docker images to capture the minimal install
 
 | HTS Lib Version | Environment | Default install `/usr/local` | Custom install `/opt/install` |
 | --------------- | ----------- | ---------------------------- | ----------------------------- |
+| 1.10            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.10            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.10            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.11            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.11            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.11            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.12            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.12            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.12            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.13            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.13            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.13            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
 | 1.14            | Ubuntu 22.04                               | ✅ | ✅ |
 | 1.14            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
 | 1.14            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
