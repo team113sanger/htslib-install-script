@@ -21,7 +21,7 @@ a popular library for reading and writing files in the SAM/BAM/CRAM formats as
 well as VCF/BCF formats. It includes `tabix` and `bgzip` utility programs.
 
 The script encapsulates the steps to download, configure, compile and install
-`htslib` to a specified location, for versions `1.14` to `1.20`.
+`htslib` to a specified location, for versions `1.10` to `1.20`.
 
 The script is tested via a private GitLab CICD against Ubuntu 22.04 and Debian
 bookworm with popular Docker images.
@@ -119,6 +119,18 @@ The testing of script is done using Docker images to capture the minimal install
 
 | HTS Lib Version | Environment | Default install `/usr/local` | Custom install `/opt/install` |
 | --------------- | ----------- | ---------------------------- | ----------------------------- |
+| 1.10            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.10            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.10            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.11            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.11            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.11            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.12            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.12            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.12            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.13            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.13            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.13            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
 | 1.14            | Ubuntu 22.04                               | ✅ | ✅ |
 | 1.14            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
 | 1.14            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
