@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.3] - 2025-07-21
+### Updated
+- Update & tested the script to support htslib versions 1.21 and 1.22.
+- Added `ldconfig` to the list of required programs and run it after
+  installation to update the shared library cache.
+    - Improves the installation process in different environments.
+
 ## [1.0.2] - 2024-08-30
 ### Added
 - Extend testing to cover installation of htslib on 1.10, 1.11, 1.12 and 1.13,
