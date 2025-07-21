@@ -21,7 +21,7 @@ a popular library for reading and writing files in the SAM/BAM/CRAM formats as
 well as VCF/BCF formats. It includes `tabix` and `bgzip` utility programs.
 
 The script encapsulates the steps to download, configure, compile and install
-`htslib` to a specified location, for versions `1.10` to `1.20`.
+`htslib` to a specified location, for versions `1.10` to `1.22`.
 
 The script is tested via a private GitLab CICD against Ubuntu 22.04 and Debian
 bookworm with popular Docker images.
@@ -152,6 +152,12 @@ The testing of script is done using Docker images to capture the minimal install
 | 1.20            | Ubuntu 22.04                               | ✅ | ✅ |
 | 1.20            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
 | 1.20            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.21            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.21            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.21            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
+| 1.22            | Ubuntu 22.04                               | ✅ | ✅ |
+| 1.22            | R-Base 4.2.3 (*Debian* bookworm)           | ✅ | ✅ |
+| 1.22            | Python 3.11.9 (*Debian* bookworm)          | ✅ | ✅ |
 
 
 ## Development
