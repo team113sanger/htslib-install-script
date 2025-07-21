@@ -16,7 +16,7 @@ PROGRAM_NAME="htslib"
 TARBALL_SUFFIX=".tar.bz2"
 DEFAULT_INSTALL_DIR="/usr/local"
 SCRIPT_VERSION="1.0.1"
-REQUIRED_PROGRAMS=(curl make gcc tar sed)
+REQUIRED_PROGRAMS=(curl make gcc tar sed ldconfig)
 URL_TEMPLATE="https://github.com/samtools/htslib/releases/download/{}/htslib-{}.tar.bz2"
 
 ### FUNCTIONS ###
@@ -390,6 +390,9 @@ function main() {
 
   # Clean up the installation directory
   clean_up "${setup_dir:?}" "${tarball:?}"
+
+  # Run ldconfig to update the shared library cache
+  ldconfig
 
   print_info "Installation complete."
 }
